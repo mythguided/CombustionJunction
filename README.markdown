@@ -1,1 +1,1 @@
-Combustion Junction is a simple addon to help Fire Mages determine the best tiem to use Combustion.
+Combustion Junction is a simple addon to help Fire Mages determine the best time to use Combustion.
