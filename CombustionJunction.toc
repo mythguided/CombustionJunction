@@ -1,0 +1,14 @@
+## Interface: 40000
+## Title: Combustion Junction
+## Notes: What's your function? To help mages maximize their Combustion!
+## Author: Xbalanque of Draka
+## Version: 4.0.1.1
+## X-Website: http://github.com/mythguided
+## X-Email: mythguided.mods@gmail.com
+## OptionalDeps: tekdebug
+## SavedVariablesPerCharacter: CombustionJunctionDB
+
+## LoadManagers: AddonLoader
+## X-LoadOn-Always: delayed
+
+Core.lua
