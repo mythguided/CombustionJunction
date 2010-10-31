@@ -6,9 +6,10 @@
 ## X-Website: http://github.com/mythguided
 ## X-Email: mythguided.mods@gmail.com
 ## OptionalDeps: tekdebug
-## SavedVariablesPerCharacter: CombustionJunctionDB
+## SavedVariablesPerCharacter: COMBUSTION_JUNCTION_HIDE_ANCHOR, COMBUSTION_JUNCTION_ANCHOR_X, COMBUSTION_JUNCTION_ANCHOR_Y
 
 ## LoadManagers: AddonLoader
-## X-LoadOn-Always: delayed
+## X-LoadOn-Class: Mage, Druid
 
 Core.lua
+

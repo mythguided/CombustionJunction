@@ -1,7 +1,7 @@
 local addonName, addonTable = ...
 
 CombustionJunction = CreateFrame("frame")
-
+addonTable.frame = CombustionJunction
 -----------------------------
 --  Debugging stuff        --
 -----------------------------
@@ -44,7 +44,7 @@ function CombustionJunction:reproject()
 						total_dmg + self.last_tick[v][target]) or
 					total_dmg
 	end
-	self.current_projection = total_dmg
+	self.current_projection = math.floor(total_dmg + 0.5)
 	self:redisplay()
 end
 
@@ -105,11 +105,55 @@ function CombustionJunction:PLAYER_LOGIN()
 		self.last_tick[v] = {}
 	end
 
+	self.hide_anchor = COMBUSTION_JUNCTION_HIDE_ANCHOR or false
+	self.anchor_x = COMBUSTION_JUNCTION_ANCHOR_X or 600
+	self.anchor_y = COMBUSTION_JUNCTION_ANCHOR_Y or 600
+
+
 
 	self.projection_display =
-		self:CreateFontString("CombustionJunctionProjection")
+		self:CreateFontString("CombustionJunctionProjectionText")
 	self.projection_display:SetFontObject(TextStatusBarText)
-	self.projection_display:SetPoint("CENTER", nil, nil, 0, 100)
+	self.projection_display_anchor = CreateFrame("Button", nil, self)
+	local anchor = self.projection_display_anchor
+	anchor:SetHeight(24)
+	anchor:SetBackdrop({bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 16, insets = {left = 5, right = 5, top = 5, bottom = 5}, tile = true, tileSize = 16})
+	anchor:SetBackdropColor(0.09, 0.09, 0.19, 0.5)
+	anchor:SetBackdropBorderColor(0.5, 0.5, 0.5, 1)
+
+	if self.hide_anchor then anchor:Hide() end
+	anchor:SetPoint("BOTTOMLEFT",UIParent,"BOTTOMLEFT",self.anchor_x, self.anchor_y)
+	self.current_projection = 0
+	self:redisplay()
+
+	local text = anchor:CreateFontString(nil, nil, "GameFontNormalSmall")
+	text:SetPoint("CENTER")
+	text:SetText("Combustion Junction")
+	anchor:SetWidth(text:GetStringWidth() + 8)
+
+	anchor:SetMovable(true)
+	anchor:RegisterForDrag("LeftButton")
+
+	anchor:SetScript("OnClick", function(self) InterfaceOptionsFrame_OpenToCategory(CombustionJunction.config) end)
+
+
+	local display = self.projection_display
+	display:SetPoint("TOPLEFT",UIParent,"BOTTOMLEFT",self.anchor_x, self.anchor_y)
+	anchor:SetScript("OnDragStart", function(self)
+		display:Hide()
+		self:StartMoving()
+	end)
+
+
+	anchor:SetScript("OnDragStop", function(self)
+		self:StopMovingOrSizing()
+		addonTable.frame.anchor_x, addonTable.frame.anchor_y = self:GetLeft(), self:GetBottom()
+		display:SetPoint("TOPLEFT",UIParent, "BOTTOMLEFT", addonTable.frame.anchor_x, addonTable.frame.anchor_y)
+		display:Show()
+	end)
+
+
+	self.projection_display:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", self.anchor_x, self.anchor_y)
 
 --~ 	for k,v in pairs(self.spells) do
 --~ 		self.last_tick[v] = 0
@@ -123,4 +167,21 @@ end
 
 
 function CombustionJunction:PLAYER_LOGOUT()
+
+	if not self.hide_anchor then
+		COMBUSTION_JUNCTION_HIDE_ANCHOR=nil
+	else
+		COMBUSTION_JUNCTION_HIDE_ANCHOR=true
+	end
+	if self.anchor_x == 600 then
+		COMBUSTION_JUNCTION_ANCHOR_X = nil
+	else
+		COMBUSTION_JUNCTION_ANCHOR_X = self.anchor_x
+	end
+	if self.anchor_y == 600 then
+		COMBUSTION_JUNCTION_ANCHOR_Y = nil
+	else
+		COMBUSTION_JUNCTION_ANCHOR_Y = self.anchor_y
+	end
+
 end
